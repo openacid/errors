@@ -1,0 +1,8 @@
+_extends: gh-config
+
+
+repository:
+  name: errors
+  description: Advanced error handling primitives, based on https://github.com/pkg/errors
+  homepage: https://github.com/openacid/errors
+  topics: go, golang, error
