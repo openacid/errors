@@ -26,7 +26,7 @@ var (
 // TODO
 func CausedBy(message string, errs ...error) error {
 
-	withstack := false
+	var withstack bool
 	
 	if len(errs) == 0 {
 		// There is no causing error, add stack by default.
@@ -39,6 +39,16 @@ func CausedBy(message string, errs ...error) error {
 	} else if errs[0] == NoStack {
 		errs = errs[1:]
 		withstack = false
+
+	} else {
+		withstack := true
+		for _, err := range errs {
+			_, ok = err.(genesisError)
+			if ok {
+				withstack = false
+				break
+			}
+		}
 	}
 
 	if withstack {
