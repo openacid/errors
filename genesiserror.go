@@ -16,15 +16,45 @@ type genesisError struct {
 	*stack
 }
 
-// TODO
-func WithCauses(message string, errs ...error) error {
+var (
+	// TODO test it doc it
+	Stack = &fundamental{msg: "flag to add stack"}
+	NoStack = &fundamental{msg: "flag NOT to add stack"}
+)
 
-	err := &genesisError{
-		code:         message,
-		directCauses: errs,
-		stack:        callers(),
+
+// TODO
+func CausedBy(message string, errs ...error) error {
+
+	withstack := false
+	
+	if len(errs) == 0 {
+		// There is no causing error, add stack by default.
+		withstack = true
+		
+	} else if errs[0] == Stack {
+		errs = errs[1:]
+		withstack = true
+
+	} else if errs[0] == NoStack {
+		errs = errs[1:]
+		withstack = false
 	}
-	return err
+
+	if withstack {
+		return &genesisError{
+			code:         message,
+			directCauses: errs,
+			stack:        callers(),
+		}
+	} else {
+		return &genesisError{
+			code:         message,
+			directCauses: errs,
+		}
+	}
+
+
 }
 
 func (w *genesisError) Cause() error {

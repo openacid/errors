@@ -6,12 +6,9 @@ import (
 	"testing"
 )
 
-type nilError struct{}
-
-func (nilError) Error() string { return "nil error" }
-
-func TestGenesisCauseAllCauseError()(t *testing.T) {
+func TestGenesisCauseAllCauseError(t *testing.T) {
 	x := New("error")
+	basic := WithCauses("basic-error")
 	tests := []struct {
 		err       error
 		want      error
@@ -19,39 +16,39 @@ func TestGenesisCauseAllCauseError()(t *testing.T) {
 		strwant   string
 	}{{
 		// nil error is nil
-		err:       nil,
-		want:      nil,
-		allcauses: nil,
-		strwant:   "",
+		nil,
+		nil,
+		nil,
+		"",
 	}, {
 		// explicit nil error is nil
-		err:       (error)(nil),
-		want:      nil,
-		allcauses: nil,
-		strwant:   "",
+		(error)(nil),
+		nil,
+		nil,
+		"",
 	}, {
 		// typed nil is nil
-		err:       (*nilError)(nil),
-		want:      (*nilError)(nil),
-		allcauses: []error{},
-		strwant:   "",
+		(*nilError)(nil),
+		(*nilError)(nil),
+		[]error{},
+		"",
 	}, {
 		// uncaused error is unaffected
-		err:       io.EOF,
-		want:      io.EOF,
-		allcauses: []error{},
-		strwant:   "EOF",
+		io.EOF,
+		io.EOF,
+		[]error{},
+		"EOF",
 	}, {
 		// caused error returns cause
-		err:       Wrap(io.EOF, "ignored"),
-		want:      io.EOF,
-		allcauses: []error{io.EOF},
-		strwant:   "ignored: EOF",
+		Wrap(io.EOF, "ignored"),
+		io.EOF,
+		[]error{io.EOF},
+		"ignored: EOF",
 	}, { // 6
-		err:       x, // return from errors.New
-		want:      x,
-		allcauses: []error{},
-		strwant:   "error",
+		x, // return from errors.New
+		x,
+		[]error{},
+		"error",
 	}, {
 		WithMessage(nil, "whoops"),
 		nil,
@@ -74,10 +71,10 @@ func TestGenesisCauseAllCauseError()(t *testing.T) {
 		[]error{},
 		"EOF",
 	}, { // 11
-		WithCauses("foo"),
-		nil,
+		basic,
+		basic,
 		[]error{},
-		"foo",
+		"basic-error",
 	}, {
 		WithCauses("foo", io.EOF),
 		io.EOF,

@@ -278,6 +278,11 @@ func Cause(err error) error {
 			break
 		}
 		err = cause.Cause()
+		// If it implemented Cause() but there is not cause, itself is the
+		// lowest cause.
+		if err == nil {
+			return cause.(error)
+		}
 	}
 	return err
 }
