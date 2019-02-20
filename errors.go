@@ -255,6 +255,10 @@ func (w *withMessage) Format(s fmt.State, verb rune) {
 	}
 }
 
+type causer interface {
+	Cause() error
+}
+
 // Cause returns the underlying cause of the error, if possible.
 // An error value has a cause if it implements the following
 // interface:
@@ -267,9 +271,6 @@ func (w *withMessage) Format(s fmt.State, verb rune) {
 // be returned. If the error is nil, nil will be returned without further
 // investigation.
 func Cause(err error) error {
-	type causer interface {
-		Cause() error
-	}
 
 	for err != nil {
 		cause, ok := err.(causer)
