@@ -9,9 +9,9 @@ import (
 
 func ExampleGenesisError() {
 
-	err := errors.WithCauses("foo", // create a error "foo" caused by other 2 errors: EOF and read-stopped
+	err := errors.CausedBy("foo", // create a error "foo" caused by other 2 errors: EOF and read-stopped
 		io.EOF,
-		errors.WithCauses("read-stopped", // "read stopped" error caused by other 2 errors, too:
+		errors.CausedBy("read-stopped", // "read stopped" error caused by other 2 errors, too:
 			io.ErrShortBuffer,
 			io.EOF))
 	fmt.Printf("%s", err.Error())
@@ -21,8 +21,8 @@ func ExampleGenesisError() {
 
 func ExampleGenesisPrintf() {
 
-	err := errors.WithCauses("foo", // create a error "foo" caused by error "read-stopped"
-		errors.WithCauses("read-stopped", // "read stopped" error caused by other 2 errors, too:
+	err := errors.CausedBy("foo", // create a error "foo" caused by error "read-stopped"
+		errors.CausedBy("read-stopped", // "read stopped" error caused by other 2 errors, too:
 			io.ErrShortBuffer,
 			io.EOF))
 
@@ -40,8 +40,8 @@ func ExampleGenesisPrintf() {
 
 func ExampleGenesisStack() {
 
-	err := errors.WithCauses("foo", // create a error "foo" caused by error "read-stopped"
-		errors.WithCauses("read-stopped", // "read stopped" error caused by other 2 errors, too:
+	err := errors.CausedBy("foo", // create a error "foo" caused by error "read-stopped"
+		errors.CausedBy("read-stopped", // "read stopped" error caused by other 2 errors, too:
 			io.ErrShortBuffer,
 			io.EOF))
 

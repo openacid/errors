@@ -8,7 +8,7 @@ import (
 
 func TestGenesisCauseAllCauseError(t *testing.T) {
 	x := New("error")
-	basic := WithCauses("basic-error")
+	basic := CausedBy("basic-error")
 	tests := []struct {
 		err       error
 		want      error
@@ -76,12 +76,12 @@ func TestGenesisCauseAllCauseError(t *testing.T) {
 		[]error{},
 		"basic-error",
 	}, {
-		WithCauses("foo", io.EOF),
+		CausedBy("foo", io.EOF),
 		io.EOF,
 		[]error{io.EOF},
 		"foo: EOF",
 	}, {
-		WithCauses("foo", io.EOF, x),
+		CausedBy("foo", io.EOF, x),
 		io.EOF,
 		[]error{io.EOF, x},
 		"foo: [EOF, error]",
